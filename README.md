@@ -1,2 +1,2 @@
 # notes
-My learning notes and artices
+My learning notes and articles
