@@ -1,7 +1,7 @@
 # Browser-Rendering
 
 1. **取得 HTML 文檔**
-瀏覽器發送 request to server 取得 html 文檔(以 **binary stream format** 被傳輸)，其 header 標示 **Conent-Type: text/html; chatset=UTF-8**，瀏覽器才知道如何解析該文檔，不然會以純文字的方式顯示 html 內容
+瀏覽器發送 request to server 取得 html 文檔(以 **binary stream format** 被傳輸)，其 header 標示 **Content-Type: text/html; chatset=UTF-8**，瀏覽器才知道如何解析該文檔，不然會以純文字的方式顯示 html 內容
 
 2. **建立 HTML DOM （瀏覽器解析 HTML 文檔）**
 將HTML元素(如`HTML`、`body`以及`div`等等)解析成 Node 節點(一個 JavaScript 物件)，最終這些節點會被組織成一個**樹狀**的資料結構，簡稱爲 **DOM Tree。
