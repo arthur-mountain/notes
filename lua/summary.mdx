@@ -1,0 +1,383 @@
+# Summary
+Simple example of lua syntax.
+
+<hr />
+
+### Variables
+```lua
+variable1 = 'default is global variable'
+
+function example()
+  local variable2 = 'local variable'
+
+  local constVariable = 'constant variable'
+
+  local closeVariable = 'automaticily close variable'
+end
+```
+
+<hr />
+
+### Data types
+- nil -- null value
+
+- boolean -- true or false
+
+- number -- number float(double) integer(64bit)
+
+- string
+
+- function 
+
+- userdata -- An interface to interactive with c/c++ code.
+
+- thread -- More like coroutine instead of sys thread.
+
+- table -- array or dictionary
+
+<hr />
+
+### Comment
+```lua
+-- Single line comment
+
+--[[
+  Multi line comment
+--]]
+```
+
+<hr />
+
+### String
+```lua
+s1='string with single quote'
+
+s2="string with double quote"
+
+s3=[[
+  string with multi line
+]]
+
+s4=[==[
+  string with multi line implemented by same number of equal sign
+]==]
+
+-- String length
+strLength = #"abc" -- => 3
+print(require("string").len("abc")) -- => 3
+
+-- UTF-8 string
+print(require("utf8").len("亞瑟")) -- => 2
+
+-- String concat
+print("亞" .. "瑟")
+```
+
+<hr />
+
+### Number
+```lua
+--------------------------------------------
+-- lua check integer and float automatically
+--------------------------------------------
+1.0 == 1 -- => true
+
+type(1) -- => number
+type(1.0) -- => number
+
+--------------------------------------------
+-- but still have some difference
+--------------------------------------------
+local math = require('math')
+math.type(1) --> integer
+math.type(1.0) --> float
+
+
+--------------------------------------------
+-- Convert between string and number
+--------------------------------------------
+tonumber("1.0") -- => string -> number
+
+tostring(1.0) -- => number -> string
+
+
+--------------------------------------------
+-- Casting between number and string
+--------------------------------------------
+"1.0" + 2 -- => 3 is number
+
+"1.0"..2 -- => "1.02" is string
+```
+
+<hr />
+
+### boolean and nil and condition
+```lua
+-- Only `nil`` and `false` 是 falsy, 
+-- Others is truthy(e.g. 0 or empty string or empty table)
+
+if 0 then
+  print("0 is true")
+
+if {} then
+  print("{} is true")
+else
+  print("{} is false")
+end
+
+if "" then
+  print [["" is true]]
+elseif nil then
+  print "nil is false"
+else 
+  print "final else statement"
+end
+```
+  #### Logic operator as same as others programming language
+  > ==, <, >, <=, >=
+
+  #### also python way
+  > and, or, not
+
+  #### the not equal operator is a little different
+  > ~=
+
+<hr />
+
+### Ternary Operator
+```lua
+-- like javascript
+-- string sign = (x < 0) ? “ negative” : “non-negative”
+local sign = x < 0 and 'negative' or 'non-negative'
+```
+
+### Iteration
+```lua
+--------------------------------------------
+-- for
+--------------------------------------------
+-- Increment
+for i = 1, 10, 1 do
+  print(i)
+end
+
+-- Decrement
+for i = 10, 1, -1 do
+  print(i)
+end
+
+--------------------------------------------
+-- for-in + (ipairs or pairs) iterate array or table
+--------------------------------------------
+-- Iterate array.(Notice: array index start at 1 in lua)
+array = {"one", "two", "three"}
+
+for i, v in ipairs(array) do
+  print(i, v)
+end
+--[[
+result:
+1 one
+2 two
+3 three
+--]]
+
+-- Iterate table
+tb = {
+  ["key1"] = "one",
+  ["key2"] = "two",
+  ["key3"] = "three",
+}
+
+for k, v in pairs(tb) do
+  print(k, v)
+end
+--[[
+result:
+key1 one
+key2 two
+key3 three
+--]]
+
+--------------------------------------------
+-- while
+--------------------------------------------
+destination = 10
+current_pos = 0
+while current_pos < destination do
+  current_pos = current_pos + 1
+  print(current_pos)
+end
+
+--------------------------------------------
+-- repeat until
+--------------------------------------------
+day = 0
+completed = 0
+repeat
+  completed = completed + day
+  print("第" .. day .. "天： 寫 learning 文章，完成"..completed.."篇")
+  day = day + 1
+until completed > 60
+```
+
+<hr />
+
+### Table/Array
+```lua
+array = {"one", "two", "three"}
+
+table ={ id = 1, name = "Arthur" } -- Any data type could be an value
+```
+
+<hr />
+
+### Function
+```lua
+function add(a, b)
+  return a + b
+end
+
+add(1,2) -- => returned 3
+
+
+-- Return multiple values
+function swap(a, b)
+  return b, a
+end
+
+a, b = swap(1, 2) -- => a=2, b=1
+```
+
+<hr />
+
+### Module
+```lua
+-- In MyModule.lua
+Engineer = {}
+Engineer.Type = "Engineer"
+function Engineer.sayHi(...)
+    print("Hello World!")
+end
+
+-- This is a module.
+return Engineer
+
+------------------------------------
+-- In main.lua
+local engineer = require("MyModule")
+
+engineer.sayHi() -- => Hello World!
+
+print(engineer.Type) -- => Engineer
+```
+
+### Coroutine
+```lua
+--------------------------------------------
+-- Create a coroutine
+--------------------------------------------
+t1 = coroutine.create(function() print("Hi, arthur") end)
+print(type(t1)) -- => thread: 0x8071d98
+
+
+--------------------------------------------
+-- Resume a coroutine
+--------------------------------------------
+coroutine.resume(t1) -- => Hi, arthur
+
+
+--------------------------------------------
+-- Check the status of a coroutine
+-- Signature: suspended | running | dead
+--------------------------------------------
+coroutine.status(t1) -- => so currently is dead
+
+
+--------------------------------------------
+-- Close a thread
+--------------------------------------------
+coroutine.close(t1) -- => true
+coroutine.status(t1) -- => dead
+
+
+--------------------------------------------
+-- Yield thread
+--------------------------------------------
+function genNumber(n)
+  n = n or 0
+
+  while n < 100 do
+    n = n + 1
+    coroutine.yield(n)
+  end
+end
+
+t2 = coroutine.create(genNumber)
+for i=1,3,1  do
+  print(coroutine.resume(t1))
+end
+--[[
+Output:
+  true 1
+  true 2
+  true 3
+--]]
+
+
+--------------------------------------------
+-- Wrap a thread
+--------------------------------------------
+t3 = coroutine.wrap(genNumber)
+print(type(t3)) -- => function
+
+for i=1, 3, 1 do
+  t3()
+  print(t3()) -- => 1, 2, 3
+end
+
+t3()
+print(t3(96)) -- 97
+for i=1, 3, 1 do
+  t3()
+  print(t3()) -- =>  98, 99, 100
+end
+
+print(t3()) -- => finish
+```
+
+### Error Handing
+```lua
+--------------------------------------------
+-- `pcall`, without returned value
+--------------------------------------------
+function div(a,b)
+  return a/b
+end
+
+ok, c = pcall(div, 10, 2)
+
+if ok then
+  print(c) --> Output: 5.0
+end
+
+ok, c = pcall(div, 10, "str")
+
+if not ok then
+  print("Error Message: ")
+  print(c)
+end
+
+--------------------------------------------
+-- `xpcall`, allowed passed an error handler
+--------------------------------------------
+function errorHandle(msg)
+  print("Error Message"..msg)
+  return .5
+end
+
+ok, c = xpcall(div, errorHandle, 10, "str")
+
+print("----------")
+print(ok, c) -- false 0.5
+```
