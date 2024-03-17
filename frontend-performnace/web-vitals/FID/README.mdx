@@ -31,20 +31,17 @@
 1. Browser 回應時間越快越好。
 2. Javascript 越快註冊 event listener 越好。
 
-P.S. 研究上能達到 `100ms` 內最好
+> 研究上能達到 `100ms` 內最好
 
-## 影響因子
 
-簡單來說就是，Javascript 執行太久，導致 main thread blocked 太久。
+> 以 input or button，要有作用就要等 react register listeners。（如果是用 controlled from 的方式)
+>
+> 拿 input 來看:
+>
+> 1. 傳統 html input: 可以直接輸入，而不必等 react register listener, 因為 input value 是瀏覽器控制的.
+> 
+> 2. 而 JSX + controlled from: 要等 useState value and onChange listener setup.
 
-P.S.
-常見得如: input or button，要有作用就要等 react register listeners。（如果是用 controlled from 的方式)
-
-拿 input 來看，如果是
-
-1. 傳統 html input: 可以直接輸入，而不必等 react register listener, 因為 input value 是瀏覽器控制的.
-
-2. JSX + controlled from: 要等 useState value and onChange listener setup.
 
 ## 如何改善
 
