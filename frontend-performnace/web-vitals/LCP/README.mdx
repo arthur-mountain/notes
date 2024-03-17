@@ -2,55 +2,81 @@
 
 ## 如何影響 user
 
-第一屏，能看見的最大元素(且是`相對於其他元素`)，e.g. Image、Logo、Video、Article
+第一屏，能看見的最大元素(且是`相對於其他元素`)
+
+e.g. Image、Logo、Video、Article
 
 ## 計算方式
 
-> For developer：
+只有可視區域內的元素會被評估，超過螢幕的元素都不納入計算範圍
 
-1. User `第一次` 與網頁互動。
-2. Browser `回應` User `第一次` 與網頁互動的時間。
+1. 只會考量以下元素: 
+  - 圖片 (`img tag`)
+  - SVG內的image (`svg 內的 image tag`)
+  - 影片 (`video tag`)
+    - 代表圖片的載入時間 (`poster attribute`)
+    - 第一個影格的載入時間 (`first frame`)
+  - 透過 css 載入的url (`url()`)
+  - 文字節點的區塊元素 (`block element`), e.g. div , p
 
-> 簡單的時間軸：
+2. 但忽略以下元素:
+  - 透明度為 0 的 element
+  - placeholder element
 
-1. FCP -> FID -> TTI
+而我們的網站會是分階段 render 的，因此每次的 render 畫面上的 LCP element 可能會改變，
 
-![FID](assets/FID.png)
+因此每次會給當前最大 element 標記為 LCP element，直到 load 事件被觸發.
 
-> 預期：
 
-1. Browser 回應時間越快越好。
-2. Javascript 越快註冊 event listener 越好。
+> ###### <font color='orange'>標記是如何執行的</font>:
+> 在 PerformanceObserver 裡，當下的 LCP element 會被標記成 entry of type is [`largest-contentful-paint`](https://developer.mozilla.org/en-US/docs/Web/API/LargestContentfulPaint)
+>
+> 其中 entry 是一個 [PerformanceEntry](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceEntry) 物件，裡面包含了 LCP element 的資訊和 startTime(time of LCP element rendered)
 
-P.S. 研究上能達到 `100ms` 內最好
+------------------------------------------------------------------------
 
-## 影響因子
+> ###### <font color='orange'>為什麼是 load 事件</font>:
+> 因為 load 事件是當所有資源都被載入後才會被觸發，因此可以確保 LCP element 已經被載入完成且 render
 
-簡單來說就是，Javascript 執行太久，導致 main thread blocked 太久。
-
-P.S.
-常見得如: input or button，要有作用就要等 react register listeners。（如果是用 controlled from 的方式)
-
-拿 input 來看，如果是
-
-1. 傳統 html input: 可以直接輸入，而不必等 react register listener, 因為 input value 是瀏覽器控制的.
-
-2. JSX + controlled from: 要等 useState value and onChange listener setup.
 
 ## 如何改善
 
-避免 main thread blocked，減輕 javascript 執行時間.
+可識區域中最大的 element 越早 render 越好.
 
-1. 避免首次 render 時:
-   a. 執行 heavy javascript, 適當使用 async.
-   b. 執行過多第三方 library.(For example: tracking, ad, etc)
+1. 降低 server request time
+    - 使用 CDN
+    - Cache
 
-2. Async or preload css, script sources.
+------------------------------------------------------------------------
 
-3. 適當使用 code splitting, 減輕每次 javascript request size.
+2. 避免 main thread blocked
+    - 降低 javscript blocking time
+    - 降低 css blocking time
 
-4. 適當使用 web worker 執行一些背景工作.
+------------------------------------------------------------------------
+
+3. 加速資源的載入
+    - 控制圖片size，只拿所需大小的圖片即可
+    - Preload 中重要的資源，e.g. 字型、團片的url
+    - Preconnect 確定需要連接的資源，e.g. API domain, CDN domain 
+      - 可以連同 dns-prefetch 一起使用：預先解析 DNS
+    - 根據使用者 network status 提供不同內容
+
+------------------------------------------------------------------------
+
+4. 善用 service worker
+
+------------------------------------------------------------------------
+
+5. 避免可識區域是 CSR(Client side render)
+  
+    因為這樣要等到 javascript 被執行，畫面才會被 render，
+    如果不可避免要用 CSR ，那主要目標會變成，盡可能加快 javascript 的執行.
+
 
 ## Refs
 
-[web.dev](https://web.dev/articles/fid?hl=zh-tw)
+[web.dev](https://web.dev/articles/lcp?hl=en)
+
+[今晚，我想來點 Web 前端效能優化大補帖！](https://medium.com/starbugs/%E4%BB%8A%E6%99%9A-%E6%88%91%E6%83%B3%E4%BE%86%E9%BB%9E-web-%E5%89%8D%E7%AB%AF%E6%95%88%E8%83%BD%E5%84%AA%E5%8C%96%E5%A4%A7%E8%A3%9C%E5%B8%96-e1a5805c1ca2)
+
