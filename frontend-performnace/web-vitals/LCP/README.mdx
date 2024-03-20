@@ -2,26 +2,28 @@
 
 ## 如何影響 user
 
-第一屏，能看見的最大元素(且是`相對於其他元素`)
+第一屏，能看見的最大元素(且是`相對於其他元素`)，通常而言 LCP 也是最能呈現給使用者看到得資訊
 
 e.g. Image、Logo、Video、Article
 
 ## 計算方式
 
-只有可視區域內的元素會被評估，超過螢幕的元素都不納入計算範圍
+只有可視區域內的元素會被評估，超過螢幕的元素都不納入計算範圍，
 
 1. 只會考量以下元素: 
-  - 圖片 (`img tag`)
-  - SVG內的image (`svg 內的 image tag`)
-  - 影片 (`video tag`)
-    - 代表圖片的載入時間 (`poster attribute`)
-    - 第一個影格的載入時間 (`first frame`)
-  - 透過 css 載入的url (`url()`)
-  - 文字節點的區塊元素 (`block element`), e.g. div , p
+  * 圖片 (`img tag`)
+  * SVG內的image (`svg 內的 image tag`)
+  * 影片 (`video tag`)
+    * 代表圖片的載入時間 (`poster attribute`)
+    * 第一個影格的載入時間 (`first frame`)
+  * 透過 css 載入的url (`url()`)
+  * 文字節點的區塊元素 (`block element`), e.g. div , p
+
+------------------------------------------------------------------------
 
 2. 但忽略以下元素:
-  - 透明度為 0 的 element
-  - placeholder element
+  * 透明度為 0 的 element
+  * placeholder element
 
 而我們的網站會是分階段 render 的，因此每次的 render 畫面上的 LCP element 可能會改變，
 
@@ -33,6 +35,30 @@ e.g. Image、Logo、Video、Article
 >
 > 其中 entry 是一個 [PerformanceEntry](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceEntry) 物件，裡面包含了 LCP element 的資訊和 startTime(time of LCP element rendered)
 
+------------------------------------------------------------------------
+
+3. LCP 又往下延伸四個子類別，這四個子類別的加總，就會是 LCP 的計算標準
+  * Time to first byte (TTFB): 從瀏覽器發出 request 到收到第一個 byte 的時間
+    * 在 PR75 內 LCP Element 要在 `2.5S rendered`，才會被視為 good score
+
+  * Resource load delay
+
+  * Resource load time
+
+  * Element render delay
+
+> P.S. 上面沒有把各自佔多少百分比列出來是因為
+>
+> 即使四個子類都有各自的權重在，但如果想達到綠色（good）的話，就必須要把四個子類都做好，
+>
+> 因為只做好其中一個子類別，可能也會影響到另一個子類別，進而無法達到 good score，
+>
+> 所以不需要特別去記住各自的權重，但如果只想稍微提升 LCP 的話，
+> 可以參考[這裡](https://web.dev/articles/optimize-lcp#optimal-subcategory-times)，去了解各自的子類別所佔比的權重
+
+> ###### <font color='orange'>什麼是 PR75</font>:
+>
+> 100 位 users 中的 75 位 users 的 LCP Element 要在 2.5S rendered，才會被視為綠色（good）
 ------------------------------------------------------------------------
 
 > ###### <font color='orange'>為什麼是 load 事件</font>:
