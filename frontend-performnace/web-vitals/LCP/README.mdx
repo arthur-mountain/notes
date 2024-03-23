@@ -10,99 +10,156 @@ e.g. Image、Logo、Video、Article
 
 只有可視區域內的元素會被評估，超過螢幕的元素都不納入計算範圍，
 
-1. 只會考量以下元素: 
-  * 圖片 (`img tag`)
-  * SVG內的image (`svg 內的 image tag`)
-  * 影片 (`video tag`)
-    * 代表圖片的載入時間 (`poster attribute`)
-    * 第一個影格的載入時間 (`first frame`)
-  * 透過 css 載入的url (`url()`)
-  * 文字節點的區塊元素 (`block element`), e.g. div , p
-
-------------------------------------------------------------------------
-
-2. 但忽略以下元素:
-  * 透明度為 0 的 element
-  * placeholder element
-
 而我們的網站會是分階段 render 的，因此每次的 render 畫面上的 LCP element 可能會改變，
 
-因此每次會給當前最大 element 標記為 LCP element，直到 load 事件被觸發.
+因此每次會給當前`最大 element 標記為 LCP element`，直到 `load 事件`被觸發.
 
 
 > ###### <font color='orange'>標記是如何執行的</font>:
 > 在 PerformanceObserver 裡，當下的 LCP element 會被標記成 entry of type is [`largest-contentful-paint`](https://developer.mozilla.org/en-US/docs/Web/API/LargestContentfulPaint)
 >
 > 其中 entry 是一個 [PerformanceEntry](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceEntry) 物件，裡面包含了 LCP element 的資訊和 startTime(time of LCP element rendered)
-
-------------------------------------------------------------------------
-
-3. LCP 又往下延伸四個子類別，這四個子類別的加總，就會是 LCP 的計算標準
-  * Time to first byte (TTFB): 從瀏覽器發出 request 到收到第一個 byte 的時間
-    * 在 PR75 內 LCP Element 要在 `2.5S rendered`，才會被視為 good score
-
-  * Resource load delay
-
-  * Resource load time
-
-  * Element render delay
-
-> P.S. 上面沒有把各自佔多少百分比列出來是因為
 >
-> 即使四個子類都有各自的權重在，但如果想達到綠色（good）的話，就必須要把四個子類都做好，
->
-> 因為只做好其中一個子類別，可能也會影響到另一個子類別，進而無法達到 good score，
->
-> 所以不需要特別去記住各自的權重，但如果只想稍微提升 LCP 的話，
-> 可以參考[這裡](https://web.dev/articles/optimize-lcp#optimal-subcategory-times)，去了解各自的子類別所佔比的權重
-
-> ###### <font color='orange'>什麼是 PR75</font>:
->
-> 100 位 users 中的 75 位 users 的 LCP Element 要在 2.5S rendered，才會被視為綠色（good）
-------------------------------------------------------------------------
+> [這裡](https://web.dev/articles/optimize-lcp?hl=zh-tw#monitor-in-javascript)提供 template code，可以直接在 local 測試 LCP
 
 > ###### <font color='orange'>為什麼是 load 事件</font>:
 > 因為 load 事件是當所有資源都被載入後才會被觸發，因此可以確保 LCP element 已經被載入完成且 render
 
+1. 只會考量以下元素: 
+    * 圖片 (`img tag`)
+    * SVG內的image (`svg 內的 image tag`)
+    * 影片 (`video tag`)
+      * 代表圖片的載入時間 (`poster attribute`)
+      * 第一個影格的載入時間 (`first frame`)
+    * 透過 css 載入的url (`url()`)
+    * 文字節點的區塊元素 (`block element`), e.g. div , p
+
+    ---
+
+2. 但忽略以下元素:
+    * 透明度為 0 的 element
+    * placeholder element
+
+    ---
+
+3. LCP 又往下延伸四個子類別，這四個子類別的加總，就會是 LCP 的計算標準
+    * Time to first byte (TTFB): `從瀏覽器發出 request -> 收到第一個 byte 的時間`
+      * 這是一個會影響全部(其他)指標中的一個指標，因為通常 TTFB 越小，代表瀏覽器越快收到資料(可以越快做事情)，而不是乾等
+      * 在 PR75 內 LCP Element 要在 `2.5s rendered`，才會被視為 good score，如果 TTFB 差，那要達到 2.5S 就會越困難，甚至不可能
+        > ###### <font color='orange'>什麼是 PR75</font>:
+        >
+        > 100 位 users 中的 75 位 users 的 LCP Element 要在 2.5S rendered，才會被視為綠色（good）
+
+      ---
+
+    * Resource load delay: `從 TTFB -> 開始 request LCP Resource 的時間`
+      * 如果是`傳統方式(直接寫 html, css, js)` 或 `SSR`，則 LCP Element 已經在 HTML 資源中，那 load delay 基本上就會是 0
+      * 如果是`CSR`，因為 LCP Element 要等到 javascript 被執行才會被 render，所以 load delay 就會變大
+        * 所謂 CSR 是指，透過 javascript create and insert dom node into html
+        ```javascript
+          // `Get response of javascript`
+          // `Interpreter javascript and executed`
+
+          // `Create LCP element, 這裡用 image 當範例，其他元素是一樣意思`
+          const img = document.createElement('img');
+          img.src = 'https://example.com/image.jpg';
+          // `insert into html`
+          document.body.appendChild(img);
+        ```
+        * 因此 CSR 又要多等待 javascript 的處理，而 js 又是 single main thread，會一直被各種 blocked
+
+      ---
+
+    * Resource load time: `從開始 request LCP Resource -> 得到 response 的時間`
+      * 如果不需要載入任何資源即可顯示，則為 0
+      * 如果是字體
+        * 如果字體是系統字體，那就不需要載入資源，load time 就會是 0
+        * 如果字體是外部字體，那就是外部字體完整載入的時間
+      * 如果是圖片，那就是圖片載入完成的時間
+      * ...etc
+
+      ---
+
+    * Element render delay: `從 LCP Resource 載入完成 -> LCP Element 完全轉譯的時間`
+      * 即 LCP Element 在 HTML 中被解析(轉譯) 完成，已經準備可以被 render 的時間
+      * 這個時間是由瀏覽器決定，因此較為無法控制，但可以透過其他方式來優化，e.g.
+        * 降低 request waterfall
+        * 降低 main thread 負擔(降低 javascript blocking time)
+        * ...etc
+      * 因為 LCP 所需要的資源等都已完成，避免瀏覽器因為其他資源而 blocked LCP Element parse;
+
+    ---
+
+> ###### <font color='orange'>為什麼沒有把上面各個子類別，各佔多少百分比列出來</font>:
+>
+> 是的，每個子類別都有各自的權重在，但如果想達到綠色（good）的話，就必須要把四個子類都做好，
+>
+> 因為只做好其中一個子類別，可能也會影響到另一個子類別，進而無法提升 LCP or 達到 good score，
+>
+> 所以不需要特別去記住各自的權重，但如果只想稍微提升 LCP 的話，
+> 可以參考[這裡](https://web.dev/articles/optimize-lcp#optimal-subcategory-times)，去了解各自的子類別所佔比的權重
 
 ## 如何改善
 
-可識區域中最大的 element 越早 render 越好.
-
-1. 降低 server request time
+1. `降低 server request time`
     - 使用 CDN
     - Cache
 
-------------------------------------------------------------------------
+    ---
 
-2. 避免 main thread blocked
+2. `避免 main thread blocked`
     - 降低 javscript blocking time
     - 降低 css blocking time
 
-------------------------------------------------------------------------
+    ---
 
-3. 加速資源的載入
-    - 控制圖片size，只拿所需大小的圖片即可
-    - Preload 中重要的資源，e.g. 字型、團片的url
-    - Preconnect 確定需要連接的資源，e.g. API domain, CDN domain 
-      - 可以連同 dns-prefetch 一起使用：預先解析 DNS
-    - 根據使用者 network status 提供不同內容
-
-------------------------------------------------------------------------
-
-4. 善用 service worker
-
-------------------------------------------------------------------------
-
-5. 避免可識區域是 CSR(Client side render)
+3. `避免可識區域是 CSR (Client side render)`
   
     因為這樣要等到 javascript 被執行，畫面才會被 render，
-    如果不可避免要用 CSR ，那主要目標會變成，盡可能加快 javascript 的執行.
 
+    如果不可避免要用 CSR ，那主要目標會變成，盡可能加快 javascript 的執行，
 
+    但要達到 good 困難度會上升很多，除非頁面的資源很少，少到讓 javascript 很快被執行
+    
+    ---
+
+4. `加速資源的載入`
+    - `Preload` 中重要的資源 
+      - 圖片、字體、影片、css
+    - `Preconnect` 確定需要連接的資源，有助於改善 TTFB 的時間
+      - API domain, CDN domain 
+      - 可以連同 dns-prefetch 一起使用：預先解析 DNS
+    - `不要 lazyload` LCP Resource
+    - 設置 `fetchpriority: high`
+      - 雖然這裡基本上瀏覽器一定會處理，因為瀏覽器不可能，讓可視區塊的圖片資源擁有很低的優先級，但這會需要等待瀏覽器處理
+      - 因此能在開發時期，針對 LCP 加上 fetchpriority 會比較好一些，而不用等瀏覽器
+      > From web.dev:
+      >
+      > 圖片的預設優先順序為「低」，如果位於可視區域內，圖片在版面配置時間時會提升至「高」
+      >
+      > 另外，在 Chrome 117 中，前 5 張大型圖片將設定為「中度」，以便加快下載速度，
+      >
+      > 其中 2 張可在初始「視線模式」期間平行擷取。
+
+      > ###### <font color='orange'>如何看到 request priority</font>
+      > 在 Devtool network 對`表格標題`點選右鍵，點選 `Priority`，可以看到各個資源的 priority
+    - 根據使用者 network status 提供不同內容
+
+    ---
+
+4. `善用 service worker`
+    - 但透過 service worker 會讓專案複雜度提升，斟酌使用
+    - 關於 service worker 就不多做介紹，很多資源可以參考
+
+    ---
+
+5. 如果 LCP Resource 很小，可以考慮用 `base64` ，但 base64 會有以下缺點:
+    - 增加檔案大小
+    - 不會被 cache
+    - 增加解碼(decode)時間
+    
 ## Refs
 
 [web.dev](https://web.dev/articles/lcp?hl=en)
 
 [今晚，我想來點 Web 前端效能優化大補帖！](https://medium.com/starbugs/%E4%BB%8A%E6%99%9A-%E6%88%91%E6%83%B3%E4%BE%86%E9%BB%9E-web-%E5%89%8D%E7%AB%AF%E6%95%88%E8%83%BD%E5%84%AA%E5%8C%96%E5%A4%A7%E8%A3%9C%E5%B8%96-e1a5805c1ca2)
-
