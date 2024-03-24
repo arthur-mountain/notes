@@ -1,0 +1,58 @@
+# FCP (First Contentful Paint)
+
+## 如何影響 user ?
+
+  User 進到網頁時看到的 `第一個出現的內容`
+
+## FCP 是核心指標嗎 ?
+
+  不是
+
+## 計算方式 ?
+
+### 在 TTFB 結束後到第一個 contentful paint 的時間
+
+  FCP 偏低越好，表示 user 能越快看到畫面上有東西，而非白畫面
+
+  在 `PR75` 內，在 `1.8s` 內視為 good score
+
+### 會被納入計算的元素有，
+  1. 文字
+  2. 圖片
+  3. svg
+  4. canvas
+
+## 如何改善 ?
+
+  FCP 的改善也是相對簡單，`盡可能首次 render 時間越快越好`
+
+  而其中要做得重點有，`避免 CSS 、JS 等 resource block html parse and render`
+
+
+  1. `壓縮 css 和 js`
+      - 通常 bundler 會處理
+      ---
+
+  2. `css 和 js 的 code split`
+      - 通常 bundler 會處理
+
+      ---
+
+  3. `Remove/lazyload unused css and js`
+      - Track 相關的 js
+      - ...etc
+
+      ---
+
+  4. [`提升 TTFB`](../TTFB/README.mdx)
+
+      ---
+
+  5. `降低 DOM nodes`
+
+## Refs
+
+  1. [web.dev](https://web.dev/articles/fcp)
+
+  2. [optimize FCP](https://web.dev/articles/optimize-fcp)
+
