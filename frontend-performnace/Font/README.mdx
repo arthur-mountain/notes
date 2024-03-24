@@ -1,0 +1,52 @@
+# Optimize Font
+
+1. 瀏覽器不會 preload 字體，直接 parsing 到 h1 元素才會去 request font file
+    ```css
+      @font-face {
+        font-family: "Open Sans";
+        src: url("/fonts/OpenSans-Regular-webfont.woff2") format("woff2");
+      }
+
+
+      h1 {
+        font-family: "Open Sans";
+      }
+    ```
+
+    ---
+
+2. 透過 preload link 讓瀏覽器去 request font
+    ```html
+      <head>
+        <!-- The `crossorigin` attribute is required for fonts—even
+            self-hosted ones, as fonts are considered CORS resources. -->
+        <link rel="preload" as="font" href="/fonts/OpenSans-Regular-webfont.woff2" crossorigin>
+      </head>
+    ```
+
+    ---
+
+3. CSS 使瀏覽器禁止轉譯(parse)，可透過 style element，讓字型在 render-blocking css 前載入
+
+    ```html
+      <head>
+        <style>
+          @font-face {
+            font-family: "Open Sans";
+            src: url("/fonts/OpenSans-Regular-webfont.woff2") format("woff2");
+          }
+        </style>
+
+        <!-- render-blocking css -->
+        <link rel="stylesheet" href="/styles.css">
+      </head>
+    ```
+
+    ---
+
+4. Preconnect font
+
+5. 使用 WOFF2 字體，瀏覽器支援度高、也提供更好的壓縮率
+
+6. 字體的顯示，透過 font-display 控制，`文字轉譯的行為`及`要不要顯示文字`
+
