@@ -2,12 +2,19 @@
 
 
 1. 提供多種格式的影片
-  * 大部分瀏覽器都支援 [`H.264 codec`](https://caniuse.com/mpeg4)，
-  * [`AV1 codec`](https://caniuse.com/av1) 編碼尚未全面支援
-  * [`VP9 codec`](https://caniuse.com/webm) 同樣尚未全面支援，但比 AV1 來得好一些
-```html
-<video>
-  <source src="video.webm" type="video/webm">
-  <source src="video.mp4" type="video/mp4">
-</video>
-```
+    * 大部分瀏覽器都支援 [`H.264 codec`](https://caniuse.com/mpeg4)，
+    * [`AV1 codec`](https://caniuse.com/av1) 編碼尚未全面支援
+    * [`VP9 codec`](https://caniuse.com/webm) 同樣尚未全面支援，但比 AV1 來得好一些
+    ```html
+    <video>
+      <source src="video.webm" type="video/webm">
+      <source src="video.mp4" type="video/mp4">
+    </video>
+    ```
+2. 使用 poster 來顯示影片縮圖
+    ```html
+    <video poster="video.jpg">
+      <source src="video.webm" type="video/webm">
+      <source src="video.mp4" type="video/mp4">
+    </video>
+    ```
