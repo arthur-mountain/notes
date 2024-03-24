@@ -5,10 +5,11 @@
   使用者`第一眼看到的網頁`和`後幾眼看到的網頁`是否一樣
 
   e.g. 
-    1. 在閱讀文章時，突然被廣告擋住
-    2. 想點擊登入按鈕，按鈕在下一秒就跑掉了
-    3. 想點擊輸入框，輸入框在下一秒就跑掉了
-    4. ...etc
+
+  1. 在閱讀文章時，突然被廣告擋住
+  2. 想點擊登入按鈕，按鈕在下一秒就跑掉了
+  3. 想點擊輸入框，輸入框在下一秒就跑掉了
+  4. ...etc
 
   諸如此類的都被納入 CLS 指標的一部分
 
@@ -77,12 +78,12 @@
 
 
   1. `保留/預設圖片的大小，預留圖片的空間`，等圖片 response 回來渲染時，而不造成位移
-      - 設置 img 的 `width`、`height`
+      * 設置 img 的 `width`、`height`
         ```plain
           <img src="example.jpg" width="640" height="360" alt="Puppy with balloons">
         ```
-      - CSS 設定 `aspect-ratio` 直接設定圖片比例，也能達到同樣上述的效果，且有較好的 responsive 效果 
-        - e.g. 以寬度為基準，透過 100% width 讓瀏覽器去計算圖片的高。
+      * CSS 設定 `aspect-ratio` 直接設定圖片比例，也能達到同樣上述的效果，且有較好的 responsive 效果 
+        * e.g. 以寬度為基準，透過 100% width 讓瀏覽器去計算圖片的高。
           ```plain
             img {
               width: 100%; /* or max-width: 100%; */
@@ -98,33 +99,34 @@
       ---
 
   3. `不要讓上方元素位移`，通常只要越上方的元素有位移，底下可視範圍的元素也很有可能被影響
-      - `不要 lazyload 上方元素`
-      - 上方`確定會渲染的元素`是 `CSR`，請確保給 min-height. 
-        - 注意：如果該元素有可能不被渲染，會讓畫面上會有一個 min-height，進而導致 UI 不如預期，即使這並不會影響 performance
+      * `不要 lazyload 上方元素`
+      * 上方`確定會渲染的元素`是 `CSR`，請確保給 min-height. 
+        * 注意：如果該元素有可能不被渲染，會讓畫面上會有一個 min-height，進而導致 UI 不如預期，即使這並不會影響 performance
+
       ---
 
   4. `Preconnect 字體`（如果是用非系統字體的話）
-      - 透過 `CSS font-family` ，設定備用字體(通常會是系統字體)
+      * 透過 `CSS font-family` ，設定備用字體(通常會是系統字體)
         ```plain
           設定 sans-serif 作為 roboto 字體前
           font-family: "Roboto" , sans-serif;
         ```
-      - 透過 `CSS font-display: swap`
-        - 先顯示備用字體，等 font response 回來時再切換字體
+      * 透過 `CSS font-display: swap`
+        * 先顯示備用字體，等 font response 回來時再切換字體
       
-      - 進階：透過 `size-adjust`、`ascent-override`、`descent-override` 和 `line-gap-override` 這些 API 來調整字型
-        - 如果是用 nextjs 的 `@next/font`，預設已經會處理了
-        - 如果要自行調整，可以等上述的調整完畢後，再來嘗試，歡迎參考[這裡](https://developer.chrome.com/blog/font-fallbacks)
+      * 進階：透過 `size-adjust`、`ascent-override`、`descent-override` 和 `line-gap-override` 這些 API 來調整字型
+        * 如果是用 nextjs 的 `@next/font`，預設已經會處理了
+        * 如果要自行調整，可以等上述的調整完畢後，再來嘗試，歡迎參考[這裡](https://developer.chrome.com/blog/font-fallbacks)
 
-      - P.S.
-        - 字體的本身也是一門學問，關於字體有很多專有名詞. e.g. 行高、貼齊基準、大小、寬度
-        - 如果有在玩過 canvas ，並在 canvas 畫布上寫字的話就會知道了，有時候文字會偏移都跟上述有相關. 有時候要微調，除了要理解上述的一些專有名詞還要算數學
-        - 我也不是 canvas 大師，曾被折磨得很痛苦，真得是另一個領域的技術了，跟 webGL 一樣
+      * P.S.
+        * 字體的本身也是一門學問，關於字體有很多專有名詞. e.g. 行高、貼齊基準、大小、寬度
+        * 如果有在玩過 canvas ，並在 canvas 畫布上寫字的話就會知道了，有時候文字會偏移都跟上述有相關. 有時候要微調，除了要理解上述的一些專有名詞還要算數學
+        * 我也不是 canvas 大師，曾被折磨得很痛苦，真得是另一個領域的技術了，跟 webGL 一樣
 
 ## Refs
 
-  [web.dev](https://web.dev/articles/cls?hl=en)
+  1. [web.dev](https://web.dev/articles/cls?hl=en)
 
-  [optimize CLS](https://web.dev/articles/optimize-cls)
+  2. [optimize CLS](https://web.dev/articles/optimize-cls)
 
-  [bfcachge](https://web.dev/articles/bfcache)
+  3. [bfcachge](https://web.dev/articles/bfcache)

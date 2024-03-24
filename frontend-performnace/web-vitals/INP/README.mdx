@@ -5,10 +5,11 @@
   user 看到畫面後，是否能得到`即時反饋`，如：`按鈕點擊時的反饋`、`輸入框輸入的反饋`等。
 
   e.g.
-    1. 點擊購物車按鈕，是否快速顯示已成功加入購物車的訊息
-    2. 點擊頁籤，是否快速顯示下一個頁籤的內容
-    3. 點擊展開按鈕，是否快速展開內容
-    4. ...etc
+
+  1. 點擊購物車按鈕，是否快速顯示已成功加入購物車的訊息
+  2. 點擊頁籤，是否快速顯示下一個頁籤的內容
+  3. 點擊展開按鈕，是否快速展開內容
+  4. ...etc
 
   諸如此類的都被納入 INP 指標的一部分
 
@@ -75,13 +76,12 @@
   (目前看來 react18 concurrency 的 transition api ，是能很好提升這部分的一個實現)
 
   5. `加速 render process`，`降低 long tasks`
-      - 透過在 `requestAnimationFrame` 內呼叫 `setTimeout`，將部分 UI update 放到下一個 frame paint. (以 FPS 60 的話即 16ms 左右，大部分肉眼能分辨的指標).
-      - 可以參考[這裡](https://web.dev/articles/optimize-inp#yield_to_allow_rendering_work_to_occur_sooner)，它拿一個實作 rich editor 的 input 事件當作範例
-      - 如果有使用 react concurrency，可透過 [transiton api](https://react.dev/reference/react/useTransition) 來 rerender
+      * 透過在 `requestAnimationFrame` 內呼叫 `setTimeout`，將部分 UI update 放到下一個 frame paint. (以 FPS 60 的話即 16ms 左右，大部分肉眼能分辨的指標).
+      * 可以參考[這裡](https://web.dev/articles/optimize-inp#yield_to_allow_rendering_work_to_occur_sooner)，它拿一個實作 rich editor 的 input 事件當作範例
+      * 如果有使用 react concurrency，可透過 [transiton api](https://react.dev/reference/react/useTransition) 來 rerender
 
       > ###### <font color='orange'>什麼是 long task?</font>
       > 通常 JS 的執行如果超過 `50ms` 就會被定義成 `long task`
-      >
 
       > ###### <font color='orange'>如何避免 long task?</font>
       > 
@@ -103,22 +103,22 @@
       ---
 
   7. `降低 DOM nodes`
-      - 過於龐大的 DOM tree 會，拖累轉譯(parsing)、reflow及回覆互動的時間等效率
-      - 根據 lighthouse 統計，當 DOM nodes 
-        - 超過 `1,400` 個時，即會超出上限
-        - 超過 `800` 個時，Lighthouse 會開始警告
+      * 過於龐大的 DOM tree 會，拖累轉譯(parsing)、reflow及回覆互動的時間等效率
+      * 根據 lighthouse 統計，當 DOM nodes 
+        * 超過 `1,400` 個時，即會超出上限
+        * 超過 `800` 個時，Lighthouse 會開始警告
 
       ---
 
   8. 若無法有效的降低 DOM node，可適當透過 `CSS content-visibility`
-      - 把暫時不轉譯(parsing)可視範圍外的 DON node，以降低 browser parsing 的工作量
-      - 兼容性的部分，firefox、safari 支援度較差
-        - [MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/content-visibility#browser_compatibility)
-        - [caniuse](https://caniuse.com/?search=content-visibility)
-        - [web.dev](https://web.dev/articles/content-visibility)
+      * 把暫時不轉譯(parsing)可視範圍外的 DON node，以降低 browser parsing 的工作量
+      * 兼容性的部分，firefox、safari 支援度較差
+        * [MDN](https://developer.mozilla.org/en*US/docs/Web/CSS/content*visibility#browser_compatibility)
+        * [caniuse](https://caniuse.com/?search=content*visibility)
+        * [web.dev](https://web.dev/articles/content*visibility)
 
 ## Refs
 
-  [web.dev](https://web.dev/articles/inp)
+  1. [web.dev](https://web.dev/articles/inp)
 
-  [optimize INP](https://web.dev/articles/optimize-inp)
+  2. [optimize INP](https://web.dev/articles/optimize-inp)

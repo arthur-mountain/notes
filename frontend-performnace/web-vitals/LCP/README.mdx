@@ -108,14 +108,14 @@
 TTFB 的改善，請參考 [TTFB](../TTFB/README.md)
 
   1. `降低 server request time`
-      - 使用 CDN
-      - Cache
+      * 使用 CDN
+      * Cache
 
       ---
 
   2. `避免 main thread blocked`
-      - 降低 javscript blocking time
-      - 降低 css blocking time
+      * 降低 javscript blocking time
+      * 降低 css blocking time
 
       ---
 
@@ -130,12 +130,12 @@ TTFB 的改善，請參考 [TTFB](../TTFB/README.md)
       ---
 
   4. `加速資源的載入`
-      - `Preload` 中重要的資源 
-        - 圖片、字體、影片、css
-      - `不要 lazyload` LCP Resource
-      - 設置 `fetchpriority: high`
-        - 雖然這裡基本上瀏覽器一定會處理，因為瀏覽器不可能，讓可視區塊的圖片資源擁有很低的優先級，但這會需要等待瀏覽器處理
-        - 因此能在開發時期，針對 LCP 加上 fetchpriority 會比較好一些，而不用等瀏覽器
+      * `Preload` 中重要的資源 
+        * 圖片、字體、影片、css
+      * `不要 lazyload` LCP Resource
+      * 設置 `fetchpriority: high`
+        * 雖然這裡基本上瀏覽器一定會處理，因為瀏覽器不可能，讓可視區塊的圖片資源擁有很低的優先級，但這會需要等待瀏覽器處理
+        * 因此能在開發時期，針對 LCP 加上 fetchpriority 會比較好一些，而不用等瀏覽器
 
         > From web.dev:
         >
@@ -147,17 +147,17 @@ TTFB 的改善，請參考 [TTFB](../TTFB/README.md)
 
         > ###### <font color='orange'>如何看到 request priority</font>
         > 在 Devtool network 對`表格標題`點選右鍵，點選 `Priority`，可以看到各個資源的 priority
-      - 根據使用者 network status 提供不同內容
+      * 根據使用者 network status 提供不同內容
 
       ---
 
   5. 如果 LCP Resource 很小，可以考慮用 `base64` ，但 base64 會有以下缺點:
-      - 增加檔案大小
-      - 不會被 cache
-      - 增加解碼(decode)時間
+      * 增加檔案大小
+      * 不會被 cache
+      * 增加解碼(decode)時間
 
 ## Refs
 
-  [web.dev](https://web.dev/articles/lcp?hl=en)
+  1. [web.dev](https://web.dev/articles/lcp?hl=en)
 
-  [今晚，我想來點 Web 前端效能優化大補帖！](https://medium.com/starbugs/%E4%BB%8A%E6%99%9A-%E6%88%91%E6%83%B3%E4%BE%86%E9%BB%9E-web-%E5%89%8D%E7%AB%AF%E6%95%88%E8%83%BD%E5%84%AA%E5%8C%96%E5%A4%A7%E8%A3%9C%E5%B8%96-e1a5805c1ca2)
+  2. [今晚，我想來點 Web 前端效能優化大補帖！](https://medium.com/starbugs/%E4%BB%8A%E6%99%9A-%E6%88%91%E6%83%B3%E4%BE%86%E9%BB%9E-web-%E5%89%8D%E7%AB%AF%E6%95%88%E8%83%BD%E5%84%AA%E5%8C%96%E5%A4%A7%E8%A3%9C%E5%B8%96-e1a5805c1ca2)

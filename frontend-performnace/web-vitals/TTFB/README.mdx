@@ -33,19 +33,19 @@
 
 
 1. 使用 `CDN` vendor:
-  - 提供的 `DNS 解析`服務
-  - Edge server 能`快速返回 response`
-    - 會透過邊緣運算(edge computing)，計算離使用者所在地的 edge server
-  - 提供 `http2/3` 支援，更有效的提升 TCP 握手時間
-  - 提供 `cache`、`壓縮資源`(加速 response 回應)等服務
-  - ...etc，以上只提出可以 TTFB 的幾個部分，但 CDN vendor 的功效則遠遠不止如此
-  
+    * 提供的 `DNS 解析`服務
+    * Edge server 能`快速返回 response`
+      * 會透過邊緣運算(edge computing)，計算離使用者所在地的 edge server
+    * 提供 `http2/3` 支援，更有效的提升 TCP 握手時間
+    * 提供 `cache`、`壓縮資源`(加速 response 回應)等服務
+    * ...etc，以上只提出可以 TTFB 的幾個部分，但 CDN vendor 的功效則遠遠不止如此
+
     ---
 
 2. `提早建立網路連線`
-    - `Preconnect` 確定需要連接的資源
-      - API domain, CDN domain 
-      - 可以連同 dns-prefetch 一起使用：預先解析 DNS
+    * `Preconnect` 確定需要連接的資源
+      * API domain, CDN domain 
+      * 可以連同 dns-prefetch 一起使用：預先解析 DNS
 
     ---
 
@@ -54,9 +54,9 @@
     ---
 
 3. 多透過 `stream` 將資源串流給 browser.
-    - 透過 stream 的方式，可以讓 browser 逐步接收 response，而不是等到全部 response 才回傳
-    - React 的 server side render 已經有封裝過並提供相關的 [api 接口](https://react.dev/reference/react-dom/server/renderToPipeableStream).
-      - P.S. Nextjs 已經幫我們處理好這塊了
+    * 透過 stream 的方式，可以讓 browser 逐步接收 response，而不是等到全部 response 才回傳
+    * React 的 server side render 已經有封裝過並提供相關的 [api 接口](https://react.dev/reference/react-dom/server/renderToPipeableStream).
+      * P.S. Nextjs 已經幫我們處理好這塊了
 
     > ###### <font color='orange'>什麼是 stream ?</font>
     > 其實就是 chunk 的應用，將檔案拆成多個小 chunk 逐步傳輸
@@ -80,24 +80,24 @@
     ---
 
 4. 適當使用 `service worker`.
-    - `建議，請以針對上面幾點，先進行優化，特別是靜態資源的 CDN、Cache`
-    - 針對靜態資源處理，使用 [`server work`](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API) + [`browse cache storage`](https://developer.mozilla.org/en-US/docs/Web/API/Cache) 
-    - `純 html` 的部分，可透過 service worker 快取起來，同時盡可能搭配 stream 做 network request，因為 service worker 的啟動時間也會被算進 TTFB 內.
-    - 雖說 service worker 更多是用來開發 PWA，但根據需求仍有很多不同的應用場景
+    * `建議，請以針對上面幾點，先進行優化，特別是靜態資源的 CDN、Cache`
+    * 針對靜態資源處理，使用 [`server work`](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API) + [`browse cache storage`](https://developer.mozilla.org/en-US/docs/Web/API/Cache) 
+    * `純 html` 的部分，可透過 service worker 快取起來，同時盡可能搭配 stream 做 network request，因為 service worker 的啟動時間也會被算進 TTFB 內.
+    * 雖說 service worker 更多是用來開發 PWA，但根據需求仍有很多不同的應用場景
 
-    > ###### <font color='orange'>什麼是 PWA (Progressive Web Apps) ?</font>
-    > 套著 APP 殼的瀏覽器，所有功能其實都執行在 browser 上，
-    >
-    > 支持離線預覽、快取、[web push](https://developer.mozilla.org/zh-CN/docs/Web/API/Push_API)等功能
-    > 
-    > Mobile: 不用安裝 APP 也能使用
-    >
-    > Desktop: 同 browser 一樣，但有更多的功能
+      > ###### <font color='orange'>什麼是 PWA (Progressive Web Apps) ?</font>
+      > 套著 APP 殼的瀏覽器，所有功能其實都執行在 browser 上，
+      >
+      > 支持離線預覽、快取、[web push](https://developer.mozilla.org/zh-CN/docs/Web/API/Push_API)等功能
+      > 
+      > Mobile: 不用安裝 APP 也能使用
+      >
+      > Desktop: 同 browser 一樣，但有更多的功能
 
     ---
 
 5. `壓縮資源(css, js)`
-    - 大部分 bundler 都會處理好
+    * 通常 bundler 會處理
 
     ---
 
@@ -106,8 +106,6 @@
     ---
 
 7. 盡可能使用 `http2/3`
-
-    ---
 
 ## Refs
 
