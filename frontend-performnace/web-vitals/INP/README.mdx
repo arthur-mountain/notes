@@ -1,18 +1,22 @@
 # INP (Interaction to Next Paint)
 
-## 如何影響 user
+## 如何影響 user ?
 
-user 看到畫面後，是否能得到`即時反饋`，如：`按鈕點擊時的反饋`、`輸入框輸入的反饋`等。
+  user 看到畫面後，是否能得到`即時反饋`，如：`按鈕點擊時的反饋`、`輸入框輸入的反饋`等。
 
-e.g.
-  1. 點擊購物車按鈕，是否快速顯示已成功加入購物車的訊息
-  2. 點擊頁籤，是否快速顯示下一個頁籤的內容
-  3. 點擊展開按鈕，是否快速展開內容
-  4. ...etc
+  e.g.
+    1. 點擊購物車按鈕，是否快速顯示已成功加入購物車的訊息
+    2. 點擊頁籤，是否快速顯示下一個頁籤的內容
+    3. 點擊展開按鈕，是否快速展開內容
+    4. ...etc
 
-諸如此類的都被納入 INP 指標的一部分
+  諸如此類的都被納入 INP 指標的一部分
 
-## 計算方式
+## INP 是核心指標嗎 ?
+
+  是
+
+## 計算方式 ?
 
 ### User 在網頁`點選`、`輕觸`和`鍵盤`等所有互動，並`回報最長持續時間`
 
@@ -42,79 +46,79 @@ e.g.
   2. FID: 只會紀錄`第一次`回覆使用者互動的時間
 
 
-## 如何改善
+## 如何改善 ?
 
-大致上跟 FID 差不多，避免 main thread blocked，減輕 javascript 執行時間，
+  大致上跟 FID 差不多，避免 main thread blocked，減輕 javascript 執行時間，
 
-因為即使 HTML parsed ，但 JS 尚未註冊事件(event listener)，都仍會影響使用者互動
+  因為即使 HTML parsed ，但 JS 尚未註冊事件(event listener)，都仍會影響使用者互動
 
-1. 避免首次 render 時:
-    * 執行 heavy javascript, 適當使用 async.
-    * 執行過多第三方 library.(For example: tracking, ad, etc)
+  1. 避免首次 render 時:
+      * 執行 heavy javascript, 適當使用 async.
+      * 執行過多第三方 library.(For example: tracking, ad, etc)
 
-    ---
+      ---
 
-2. Async or preload css, script sources.
+  2. Async or preload css, script sources.
 
-    ---
+      ---
 
-3. 適當使用 `code splitting`, 減輕每次 javascript request size.
+  3. 適當使用 `code splitting`, 減輕每次 javascript request size.
 
-    ---
+      ---
 
-4. 適當使用 `web worker` 執行一些背景工作.
+  4. 適當使用 `web worker` 執行一些背景工作.
 
-    ---
+      ---
 
-但 INP 相較於 FID，多了一個部分是 `repaint` 這段，render and rerender 的部分也會被納入計算
+  但 INP 相較於 FID，多了一個部分是 `repaint` 這段，render and rerender 的部分也會被納入計算
 
-(目前看來 react18 concurrency 的 transition api ，是能很好提升這部分的一個實現)
+  (目前看來 react18 concurrency 的 transition api ，是能很好提升這部分的一個實現)
 
-5. `加速 render process`，`降低 long tasks`
-    - 透過在 `requestAnimationFrame` 內呼叫 `setTimeout`，將部分 UI update 放到下一個 frame paint. (以 FPS 60 的話即 16ms 左右，大部分肉眼能分辨的指標).
-    - 可以參考[這裡](https://web.dev/articles/optimize-inp#yield_to_allow_rendering_work_to_occur_sooner)，它拿一個實作 rich editor 的 input 事件當作範例
-    - 如果有使用 react concurrency，可透過 [transiton api](https://react.dev/reference/react/useTransition) 來 rerender
+  5. `加速 render process`，`降低 long tasks`
+      - 透過在 `requestAnimationFrame` 內呼叫 `setTimeout`，將部分 UI update 放到下一個 frame paint. (以 FPS 60 的話即 16ms 左右，大部分肉眼能分辨的指標).
+      - 可以參考[這裡](https://web.dev/articles/optimize-inp#yield_to_allow_rendering_work_to_occur_sooner)，它拿一個實作 rich editor 的 input 事件當作範例
+      - 如果有使用 react concurrency，可透過 [transiton api](https://react.dev/reference/react/useTransition) 來 rerender
 
-    > ###### <font color='orange'>什麼是 long task?</font>
-    > 通常 JS 的執行如果超過 `50ms` 就會被定義成 `long task`
-    >
+      > ###### <font color='orange'>什麼是 long task?</font>
+      > 通常 JS 的執行如果超過 `50ms` 就會被定義成 `long task`
+      >
 
-    > ###### <font color='orange'>如何避免 long task?</font>
-    > 
-    > 將 long task 拆成多個小 task，如：
-    >
-    >> 1. setTimeout:<br/>
-    >>    適當使用 setTimeout 是可以避免 long task 的，但取決於`不要在 setTimeout 執行太複雜的 callback`
-    >>
-    >>    將 setTimeout callback 放到 `macro task queue` 中，等到下一次 `event loop` 才執行
-    >
-    >> 2. promise:<br/>
-    >>    將 callback 放到 `micro task queue` 中，等到下一次 `event loop` 才執行(但會在 macro queue 之前就被執行)
+      > ###### <font color='orange'>如何避免 long task?</font>
+      > 
+      > 將 long task 拆成多個小 task，如：
+      >
+      >> 1. setTimeout:<br/>
+      >>    適當使用 setTimeout 是可以避免 long task 的，但取決於`不要在 setTimeout 執行太複雜的 callback`
+      >>
+      >>    將 setTimeout callback 放到 `macro task queue` 中，等到下一次 `event loop` 才執行
+      >
+      >> 2. promise:<br/>
+      >>    將 callback 放到 `micro task queue` 中，等到下一次 `event loop` 才執行(但會在 macro queue 之前就被執行)
 
-    ---
+      ---
 
-6. `降低 reflow` 次數
-    - rerender 畫面時，盡量只觸發 browser repaint
+  6. `降低 reflow` 次數
+      - rerender 畫面時，盡量只觸發 browser repaint
 
-    ---
+      ---
 
-7. `降低 DOM nodes`
-    - 過於龐大的 DOM tree 會，拖累轉譯(parsing)、reflow及回覆互動的時間等效率
-    - 根據 lighthouse 統計，當 DOM nodes 
-      - 超過 `1,400` 個時，即會超出上限
-      - 超過 `800` 個時，Lighthouse 會開始警告
+  7. `降低 DOM nodes`
+      - 過於龐大的 DOM tree 會，拖累轉譯(parsing)、reflow及回覆互動的時間等效率
+      - 根據 lighthouse 統計，當 DOM nodes 
+        - 超過 `1,400` 個時，即會超出上限
+        - 超過 `800` 個時，Lighthouse 會開始警告
 
-    ---
+      ---
 
-8. 若無法有效的降低 DOM node，可適當透過 `CSS content-visibility`
-    - 把暫時不轉譯(parsing)可視範圍外的 DON node，以降低 browser parsing 的工作量
-    - 兼容性的部分，firefox、safari 支援度較差
-      - [MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/content-visibility#browser_compatibility)
-      - [caniuse](https://caniuse.com/?search=content-visibility)
-      - [web.dev](https://web.dev/articles/content-visibility)
+  8. 若無法有效的降低 DOM node，可適當透過 `CSS content-visibility`
+      - 把暫時不轉譯(parsing)可視範圍外的 DON node，以降低 browser parsing 的工作量
+      - 兼容性的部分，firefox、safari 支援度較差
+        - [MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/content-visibility#browser_compatibility)
+        - [caniuse](https://caniuse.com/?search=content-visibility)
+        - [web.dev](https://web.dev/articles/content-visibility)
 
 ## Refs
 
-[web.dev](https://web.dev/articles/inp)
+  [web.dev](https://web.dev/articles/inp)
 
-[optimize INP](https://web.dev/articles/optimize-inp)
+  [optimize INP](https://web.dev/articles/optimize-inp)
