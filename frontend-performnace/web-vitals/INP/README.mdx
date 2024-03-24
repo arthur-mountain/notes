@@ -58,11 +58,11 @@ e.g.
 
     ---
 
-3. 適當使用 code splitting, 減輕每次 javascript request size.
+3. 適當使用 `code splitting`, 減輕每次 javascript request size.
 
     ---
 
-4. 適當使用 web worker 執行一些背景工作.
+4. 適當使用 `web worker` 執行一些背景工作.
 
     ---
 
@@ -80,9 +80,16 @@ e.g.
     >
 
     > ###### <font color='orange'>如何避免 long task?</font>
-    > 適當使用 setTimeout 是可以避免 long task 的，
+    > 
+    > 將 long task 拆成多個小 task，如：
     >
-    > 但取決於不要在 setTimeout 執行太複雜的 callback
+    >> 1. setTimeout:<br/>
+    >>    適當使用 setTimeout 是可以避免 long task 的，但取決於`不要在 setTimeout 執行太複雜的 callback`
+    >>
+    >>    將 setTimeout callback 放到 `macro task queue` 中，等到下一次 `event loop` 才執行
+    >
+    >> 2. promise:<br/>
+    >>    將 callback 放到 `micro task queue` 中，等到下一次 `event loop` 才執行(但會在 macro queue 之前就被執行)
 
     ---
 
