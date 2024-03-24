@@ -15,14 +15,14 @@ e.g. Image、Logo、Video、Article
 因此每次會給當前`最大 element 標記為 LCP element`，直到 `load 事件`被觸發.
 
 
-> ###### <font color='orange'>標記是如何執行的</font>:
+> ###### <font color='orange'>標記是如何執行的 ?</font>
 > 在 PerformanceObserver 裡，當下的 LCP element 會被標記成 entry of type is [`largest-contentful-paint`](https://developer.mozilla.org/en-US/docs/Web/API/LargestContentfulPaint)
 >
 > 其中 entry 是一個 [PerformanceEntry](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceEntry) 物件，裡面包含了 LCP element 的資訊和 startTime(time of LCP element rendered)
 >
 > [這裡](https://web.dev/articles/optimize-lcp?hl=zh-tw#monitor-in-javascript)提供 template code，可以直接在 local 測試 LCP
 
-> ###### <font color='orange'>為什麼是 load 事件</font>:
+> ###### <font color='orange'>為什麼是 load 事件 ?</font>
 > 因為 load 事件是當所有資源都被載入後才會被觸發，因此可以確保 LCP element 已經被載入完成且 render
 
 1. 只會考量以下元素: 
@@ -46,7 +46,7 @@ e.g. Image、Logo、Video、Article
     * Time to first byte (TTFB): `從瀏覽器發出 request -> 收到第一個 byte 的時間`
       * 這是一個會影響全部(其他)指標中的一個指標，因為通常 TTFB 越小，代表瀏覽器越快收到資料(可以越快做事情)，而不是乾等
       * 在 PR75 內 LCP Element 要在 `2.5s rendered`，才會被視為 good score，如果 TTFB 差，那要達到 2.5S 就會越困難，甚至不可能
-        > ###### <font color='orange'>什麼是 PR75</font>:
+        > ###### <font color='orange'>什麼是 PR75 ?</font>
         >
         > 100 位 users 中的 75 位 users 的 LCP Element 要在 2.5S rendered，才會被視為綠色（good）
 
@@ -90,7 +90,7 @@ e.g. Image、Logo、Video、Article
 
     ---
 
-> ###### <font color='orange'>為什麼沒有把上面各個子類別，各佔多少百分比列出來</font>:
+> ###### <font color='orange'>為什麼沒有把上面各個子類別，各佔多少百分比列出來 ?</font>
 >
 > 是的，每個子類別都有各自的權重在，但如果想達到綠色（good）的話，就必須要把四個子類都做好，
 >
