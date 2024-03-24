@@ -1,0 +1,130 @@
+# TTFB (Time to first byte)
+
+## 如何影響 user ?
+
+  這並不會直接影響 user，因為 TTFB 計算期間，這段時間`使用者是看不到`的
+
+  但會`間接影響到其他指標`，如：`LCP`、`INP` 等，進而影響到 user
+
+## TTFB 是核心指標嗎 ?
+
+  不是，TTFB 只會間接影響到其他 web vitals 核心指標
+
+  因此 TTFB 並不一定需要達到 good score，
+
+## 計算方式 ?
+
+### 在 browser 發送 request 到收到 response 的時間
+
+#### 以下幾項數值的總和，即 TTFB 所花費的時間：
+  1. `Redirect 的時間`
+  2. `service worker 啟動時間`
+  3. `DNS 解析時間`
+  4. `TCP 連線時間(三次握手的時間)`
+  5. `接收到 first byte 的時間`
+
+  TTFB 偏低越好，表示 browser 能越快收到 response 並開始做事
+
+  在 `PR75` 內，在 `0.8s` 內視為 good score
+
+## 如何改善 ?
+
+針對上述 TTFB 的數值進行改善即可，以下只列出幾項比較需要提的，
+
+
+1. 使用 `CDN` vendor:
+  - 提供的 `DNS 解析`服務
+  - Edge server 能`快速返回 response`
+    - 會透過邊緣運算(edge computing)，計算離使用者所在地的 edge server
+  - 提供 `http2/3` 支援，更有效的提升 TCP 握手時間
+  - 提供 `cache`、`壓縮資源`(加速 response 回應)等服務
+  - ...etc，以上只提出可以 TTFB 的幾個部分，但 CDN vendor 的功效則遠遠不止如此
+  
+    ---
+
+2. `提早建立網路連線`
+    - `Preconnect` 確定需要連接的資源
+      - API domain, CDN domain 
+      - 可以連同 dns-prefetch 一起使用：預先解析 DNS
+
+    ---
+
+2. `減少 redirect` 的次數.
+
+    ---
+
+3. 多透過 `stream` 將資源串流給 browser.
+    - 透過 stream 的方式，可以讓 browser 逐步接收 response，而不是等到全部 response 才回傳
+    - React 的 server side render 已經有封裝過並提供相關的 [api 接口](https://react.dev/reference/react-dom/server/renderToPipeableStream).
+      - P.S. Nextjs 已經幫我們處理好這塊了
+
+    > ###### <font color='orange'>什麼是 stream ?</font>
+    > 其實就是 chunk 的應用，將檔案拆成多個小 chunk 逐步傳輸
+    >
+    > 通常會用在大檔案傳輸，如果一個檔案 1GB，我們不可能等到全部傳輸完才開始處理，
+    > 這時就可以用 stream 的方式，逐步傳輸
+
+    > ###### <font color='orange'>在還沒有 stream 前，如何手刻處理大檔案 ?</font>
+    > 使用 xhr 或 fetch 的方式，但自己實作 chunk. (很像做分頁的概念)
+    >
+    > 每次傳輸 binary，在 header 帶入 range(or content-length), total length 等資訊
+    > 
+    > 後端在接收每一個 request 時，將每一個 request payload 存起來，存在 ram or disk 中
+    >
+    > 在接收到最一個 request 的時候(後端自己計算 or client 主動送 request 告知這是最後一個 chunk)，
+    >
+    > 將所有 binary 合併，就會是最終檔案了
+    >
+    > 可以參考[這邊](https://juejin.cn/post/6844904046436843527)的實作
+
+    ---
+
+4. 適當使用 `service worker`.
+    - `建議，請以針對上面幾點，先進行優化，特別是靜態資源的 CDN、Cache`
+    - 針對靜態資源處理，使用 [`server work`](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API) + [`browse cache storage`](https://developer.mozilla.org/en-US/docs/Web/API/Cache) 
+    - `純 html` 的部分，可透過 service worker 快取起來，同時盡可能搭配 stream 做 network request，因為 service worker 的啟動時間也會被算進 TTFB 內.
+    - 雖說 service worker 更多是用來開發 PWA，但根據需求仍有很多不同的應用場景
+
+    > ###### <font color='orange'>什麼是 PWA (Progressive Web Apps) ?</font>
+    > 套著 APP 殼的瀏覽器，所有功能其實都執行在 browser 上，
+    >
+    > 支持離線預覽、快取、[web push](https://developer.mozilla.org/zh-CN/docs/Web/API/Push_API)等功能
+    > 
+    > Mobile: 不用安裝 APP 也能使用
+    >
+    > Desktop: 同 browser 一樣，但有更多的功能
+
+    ---
+
+5. `壓縮資源(css, js)`
+    - 大部分 bundler 都會處理好
+
+    ---
+
+6. `圖片最佳化`
+
+    ---
+
+7. 盡可能使用 `http2/3`
+
+    ---
+
+## Refs
+
+  1. [web.dev](https://web.dev/articles/ttfb)
+
+  2. [optimize TTFB](https://web.dev/articles/optimize-ttfb)
+
+  3. [nodejs stream pj](https://pjchender.dev/nodejs/node-streams-and-pipes)
+
+  4. [NodeJS official stream doc](https://nodejs.org/api/stream.html)
+
+  5. [MDN Browser stream doc](https://developer.mozilla.org/en-US/docs/Web/API/Streams_API)
+
+  這邊剛好本來就有三個關於 browser stream 的文章，有興趣可以參考，
+
+  6. [全面理解 js stream api](https://juejin.cn/post/6992007156320960542)
+
+  7. [精讀《web streams》](https://zhuanlan.zhihu.com/p/425322116)
+
+  8. [stream api 解析](https://blog.csdn.net/weixin_44691608/article/details/121557249)

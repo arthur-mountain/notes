@@ -105,6 +105,8 @@
 
 ## 如何改善 ?
 
+TTFB 的改善，請參考 [TTFB](../TTFB/README.md)
+
   1. `降低 server request time`
       - 使用 CDN
       - Cache
@@ -130,13 +132,11 @@
   4. `加速資源的載入`
       - `Preload` 中重要的資源 
         - 圖片、字體、影片、css
-      - `Preconnect` 確定需要連接的資源，有助於改善 TTFB 的時間
-        - API domain, CDN domain 
-        - 可以連同 dns-prefetch 一起使用：預先解析 DNS
       - `不要 lazyload` LCP Resource
       - 設置 `fetchpriority: high`
         - 雖然這裡基本上瀏覽器一定會處理，因為瀏覽器不可能，讓可視區塊的圖片資源擁有很低的優先級，但這會需要等待瀏覽器處理
         - 因此能在開發時期，針對 LCP 加上 fetchpriority 會比較好一些，而不用等瀏覽器
+
         > From web.dev:
         >
         > 圖片的預設優先順序為「低」，如果位於可視區域內，圖片在版面配置時間時會提升至「高」
@@ -148,12 +148,6 @@
         > ###### <font color='orange'>如何看到 request priority</font>
         > 在 Devtool network 對`表格標題`點選右鍵，點選 `Priority`，可以看到各個資源的 priority
       - 根據使用者 network status 提供不同內容
-
-      ---
-
-  4. `善用 service worker`
-      - 但透過 service worker 會讓專案複雜度提升，斟酌使用
-      - 關於 service worker 就不多做介紹，很多資源可以參考
 
       ---
 
