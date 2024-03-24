@@ -1,0 +1,75 @@
+# TBT (Total Blocking Time)
+
+## 如何影響 user ?
+
+  這項指標，會連動一些使用者體驗，如：
+
+  1. user 感到畫面卡頓
+  2. user 感到操作不順暢
+  3. user 感到網站不穩定
+  4. user 無法與網頁互動
+  5. ...etc
+
+## TBT 是核心指標嗎 ?
+
+  不是，但它在 [lighthouse 中的權重](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring)佔 30%
+
+## 計算方式 ?
+
+### 它是一個衡量 `主執行緒 block 狀態` 的指標
+
+  正如 [`TTFB`](../TTFB/README.mdx) 般會影響其他指標，因為對於 main thread 的 blocking 通常也會使其他指標變差
+
+### 在 [`FCP`](../FCP/README.mdx) 結束後到 TTI 間，main thread 所執行 long tasks
+
+  > ###### <font color='orange'>什麼是 TTI ?</font>
+  > 目前已經從 lighthouse10 中移除
+  >
+  > FCP 後的 5s ，往前找`最後一個 long task` 結束的當下時間，即 TTI 的時間
+  >
+  > 可以參考[這裡](https://web.dev/articles/tti#what_is_tti)，不然這個的描述有點抽象
+
+  > ###### <font color='orange'>什麼是 long task ?</font>
+  > 通常 JS 的執行，如果超過 `50ms` 就會被定義成 long task
+
+  TBT 偏低越好，表示 user 能看到越順暢且能互動的網頁
+
+  TBT = long task 50ms 後開始計算，剩餘所花時間之總和
+
+  在 `PR75` 內，TBT 在 `0.2s` 內視為 good score
+
+## 如何改善 ?
+
+  TBT 的改善也是相對簡單，`只看 javascript 的執行`
+
+
+
+  1. `減少第三方 js 的執行時間`
+
+      ---
+
+  2. `減少 js 執行時間`
+      * 將 long task 拆成多個小 task，如：
+        * setTimeout:<br/>
+         適當使用 setTimeout 是可以避免 long task 的，但取決於`不要在 setTimeout 執行太複雜的 callback`
+      
+         將 setTimeout callback 放到 `macro task queue` 中，等到下一次 `event loop` 才執行
+      
+        * promise:<br/>
+         將 callback 放到 `micro task queue` 中，等到下一次 `event loop` 才執行(但會在 macro queue 之前就被執行)
+
+      ---
+
+  3. `減少 main thread 的工作量`
+
+      ---
+
+  4. `減少 request 數量`
+
+
+## Refs
+
+  1. [web.dev](https://web.dev/articles/tbt)
+
+  2. [optimize TBT](https://web.dev/articles/optimize-tbt)
+
