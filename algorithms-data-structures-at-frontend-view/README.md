@@ -26,4 +26,6 @@
 
 - [] Two Pointer
 - [] Sliding Window
+- [] Greedy
+- [] Backtracking
 - [] Dynamic Programming
