@@ -29,13 +29,13 @@
 
 ## Study Basic practical exercises
 
+TBD
+
 ## I needs improvement the following data structures and algorithms
 
-- [] queue
 - [] priority queue
 - [] min-heap
 - [] max-heap
-- [] stack
 
 - [] single link-list
 - [] circular single link-list
