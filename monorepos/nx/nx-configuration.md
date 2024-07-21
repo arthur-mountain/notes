@@ -25,7 +25,7 @@
 }
 ```
 
-## 2. Inputs and namedInputs
+## 2. Inputs and Named Inputs
 
 - Define which input files to include in the task.
 
