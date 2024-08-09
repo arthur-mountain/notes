@@ -67,3 +67,37 @@ docker build --build-arg MY_ARG2=value . # 雖然 MY_ARG2 有預設值，但可�
 
   RUN echo "result: ${UNBUNTU_VERSION}" # -> "result: "
   ```
+
+## 補充: ARG vs ENV
+
+- ARG 也會是個環境變數(env)，即用 printenv 是能看到 ARG 變數的
+
+- 但 ARG 只存在於 build image 的過程中，當 image build 完成後，ARG 變數就不存在了，
+  代表在 container 中是存取不到 ARG 變數的
+
+- 如果需要在 container 中使用，則建議使用 ENV，ENV 會存在於 build image 和 container 中
+
+  ```dockerfile
+  # 這裡定義一個 ENV 變數
+  ENV MY_ARG=${MY_ARG}
+  ```
+
+- 因為 ARG 變數只存在 build image 的過程，所以不能用在 CMD 指令中
+
+  ```dockerfile
+  FROM ubuntu:latest
+
+  ARG MY_ARG
+
+  # 因為 CMD 是會等到 docker run 的時候執行，而 ARG 只存在於 build image 的過程中
+  CMD echo "${MY_ARG}" # 這樣是無法取到 MY_ARG 變數的
+
+  # 如果要在 CMD 中使用，請使用 ENV，因為 ENV 會存在於 container 中
+  ENV MY_ARG=${MY_ARG}
+  CMD echo ${MY_ARG} # 這樣是可以取到 MY_ARG 變數的
+
+  # 最後補充：
+  # 1. CMD 會在 container start 的時候執行的一個指令
+  # 2. 通常只會有一個 CMD，如果同時存在多個也 ok，但只有最後一個 CMD 會被執行
+  # 3. CMD 通常最後會組成以 shell script 的方式執行，例如： CMD ["sh", "-c", "echo ${MY_ARG}"]
+  ```
