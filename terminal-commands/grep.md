@@ -1,6 +1,8 @@
 # grep
 
-TBD ## Syntax
+TBD
+
+## Syntax
 
 ```bash
 grep [options] [pattern] [file]
