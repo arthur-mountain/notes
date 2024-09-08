@@ -223,4 +223,5 @@ This guide provides an overview of using Xcode’s command-line tools (`xcodebui
 ### **Summary**
 
 - **`xcodebuild`**: A direct tool for managing iOS/macOS project builds and testing. Used for performing detailed operations like building, cleaning, archiving, and testing an app.
+
 - **`xcrun`**: A helper tool used to find and run various Xcode-related tools. It doesn't build or test by itself but assists in running tools like `xcodebuild` in a streamlined manner, especially useful in multi-Xcode environments.
