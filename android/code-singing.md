@@ -166,6 +166,8 @@ zipalign -v 4 app-release-unsigned.apk app-release.apk
 
 ```bash
 jarsigner -verify -verbose -certs app-release.apk
+
+keytool -printcert -jarfile app-release.apk
 ```
 
 ## 發布應用程式
