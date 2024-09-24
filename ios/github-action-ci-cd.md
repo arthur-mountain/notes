@@ -44,7 +44,9 @@
          - name: Setup environment variables
            run: |
              echo "CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12" >> $GITHUB_ENV
+
              echo "PROVISION_PATH=$RUNNER_TEMP/build.mobileprovision" >> $GITHUB_ENV
+
              echo "KEYCHAIN_PATH=$RUNNER_TEMP/signing.keychain-db" >> $GITHUB_ENV
 
          - name: Setup Apple certificate and provisioning profile
