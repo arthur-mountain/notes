@@ -27,3 +27,5 @@
    - **App Icons 和截圖**
 
    - **App Store Connect 所需的元數據(metadata)**
+
+## **二、各類檔案的介紹與用途**
