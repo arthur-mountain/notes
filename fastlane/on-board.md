@@ -28,3 +28,11 @@ run with
 ```bash
 fastlane release
 ```
+
+## Appfile
+
+This file will automatically loaded into credential manager when running fastlane commands.
+
+```ruby
+CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier).to_s
+```
