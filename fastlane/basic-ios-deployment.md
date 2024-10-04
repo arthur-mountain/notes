@@ -200,8 +200,8 @@ lane :beta do
     in_house: false
   )
 
-  # Upload to TestFlight
-  upload_to_testflight
+  # Upload to TestFlight or App Store
+  upload_to_testflight # or upload_to_app_store
 
   # Download dSYM files
   download_dsyms
@@ -220,8 +220,8 @@ end
 
 - [Fastlane Documentation](https://docs.fastlane.tools)
 
-- [Code Signing Guide](https://docs.fastlane.tools/codesigning/getting-started)
+- [Fastlane Code Signing](https://docs.fastlane.tools/codesigning/getting-started)
 
-- [iOS Beta Deployment with Fastlane](https://docs.fastlane.tools/getting-started/ios/beta-deployment)
+- [Fastlane iOS Deployment](https://docs.fastlane.tools/getting-started/ios/beta-deployment)
 
-- [Available Fastlane Actions](https://docs.fastlane.tools/actions)
+- [Fastlane Available Actions](https://docs.fastlane.tools/actions)
