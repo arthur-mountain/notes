@@ -167,19 +167,31 @@ end
 lane :beta do
   ensure_git_status_clean
 
+  # Your App Name
+  scheme = "MyApp"
+
+  # Path to your Xcode project
+  xcodeproj = "MyApp.xcodeproj"
+
+  # Your New Version Number
+  version_number = '1.2.3'
+
+  # Your New Build Number
+  build_number: latest_testflight_build_number + 1
+
   # Select specific Xcode version (optional)
   xcodes(select_for_current_build_only: true)
 
   # Increment version number
   increment_version_number(
-    xcodeproj: "MyApp.xcodeproj",
-    version_number: '1.2.3'
+    xcodeproj: xcodeproj,
+    version_number: version_number
   )
 
   # Increment build number
   increment_build_number(
-    xcodeproj: "MyApp.xcodeproj",
-    build_number: latest_testflight_build_number + 1
+    xcodeproj: xcodeproj,
+    build_number: build_number
   )
 
   # Setup keychain in CI environment this run on CI only
@@ -189,7 +201,7 @@ lane :beta do
   sync_code_signing(type: "appstore")
 
   # Build the app
-  build_app(scheme: "MyApp")
+  build_app(scheme: scheme)
 
   # App Store Connect API Key configuration
   app_store_connect_api_key(
@@ -204,7 +216,10 @@ lane :beta do
   upload_to_testflight # or upload_to_app_store
 
   # Download dSYM files
-  download_dsyms
+  download_dsyms()
+    version: version_number,
+    build_number: build_number
+  )
 
   # Clean build artifacts
   clean_build_artifacts
