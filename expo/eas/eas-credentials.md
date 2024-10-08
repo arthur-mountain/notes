@@ -31,3 +31,21 @@ eas credentials --platform android --upload-keystore /path/to/keystore.jks
 eas credentials --platform ios --update-push-key /path/to/key.p8
 ```
 
+### 配置文件管理
+
+EAS 使用配置文件來管理不同環境下的憑證設定。這些配置文件通常包含應用的識別信息、憑證路徑和其他相關設定，確保在不同部署環境中使用正確的憑證。
+
+## 簡單範例
+
+以下是一個使用 EAS 管理 Android 簽名證書的簡單範例：
+
+### 生成和上傳簽名證書
+
+```bash
+# 使用 EAS CLI 自動生成簽名證書
+eas build:configure
+
+# 上傳自定義的簽名證書
+eas credentials --platform android --upload-keystore ./path/to/keystore.jks
+```
+
