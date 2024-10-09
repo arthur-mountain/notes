@@ -49,3 +49,5 @@ eas build:configure
 eas credentials --platform android --upload-keystore ./path/to/keystore.jks
 ```
 
+### 使用配置文件指定憑證
+
