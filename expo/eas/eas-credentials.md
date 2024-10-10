@@ -51,3 +51,25 @@ eas credentials --platform android --upload-keystore ./path/to/keystore.jks
 
 ### 使用配置文件指定憑證
 
+在 `app.json` 或 `app.config.(js|ts)`，同一層目錄下，建立一個 `credentials.json` 中指定簽名證書的路徑：
+
+```json
+{
+  "ios": {
+    "provisioningProfilePath": "path-to-your-provisioning-profile-file",
+    "distributionCertificate": {
+      "path": "path-to-your-certificate-file",
+      "password": "xxxxxxxxxxxxxxx"
+    }
+  },
+  "android": {
+    "keystore": {
+      "keystorePath": "path-to-your-keystore-file",
+      "keystorePassword": "xxxxxxxxxxxxxxx",
+      "keyAlias": "your-key-alias",
+      "keyPassword": "xxxxxxxxxxxxxxx"
+    }
+  }
+}
+```
+
