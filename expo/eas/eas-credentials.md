@@ -73,7 +73,12 @@ eas credentials --platform android --upload-keystore ./path/to/keystore.jks
 }
 ```
 
+### 構建應用
 
+```bash
+# 使用 EAS 進行構建，EAS 將自動使用配置的憑證進行簽名
+eas build --platform android
+```
 
 # 參考資源
 
