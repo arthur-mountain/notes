@@ -73,3 +73,9 @@ eas credentials --platform android --upload-keystore ./path/to/keystore.jks
 }
 ```
 
+
+
+# 參考資源
+
+- [Expo 官方文檔 - EAS Credentials](https://docs.expo.dev/app-signing/app-credentials)
+- [EAS CLI GitHub Repository](https://github.com/expo/eas-cli)
