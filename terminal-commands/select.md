@@ -86,12 +86,26 @@ done
 
 這可以通過檢查變數是否為空來判斷無效輸入：
 
+-z: 檢查變數是否為空，如果為空回傳 true。
+
 ```bash
 select option in "Option 1" "Option 2" "Option 3"; do
     if [ -z "$option" ]; then
         echo "Invalid selection, please try again."
     else
         echo "You selected $option."
+    fi
+done
+```
+
+-n: 檢查變數是否不為空，如果不為空回傳 true。
+
+```bash
+select option in "Option 1" "Option 2" "Option 3"; do
+    if [ -n "$option" ]; then
+      echo "You selected $option."
+    else
+      echo "Invalid selection, please try again."
     fi
 done
 ```
