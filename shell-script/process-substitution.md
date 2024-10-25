@@ -60,6 +60,7 @@ done < <(find . -type f -maxdepth 1 -name "*.js")
 有時我們可能會想到用管道（`|`）來實現類似的效果，例如：
 
 ```bash
+files=()
 find /path/to/search -type f | while IFS= read -r file; do
     files+=("$file")
 done
