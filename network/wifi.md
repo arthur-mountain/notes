@@ -1,6 +1,6 @@
 # Wi-Fi 網路中的運作原理
 
-先確保已經讀過
+Before we start, please make sure you have read the
 
 1. [DHCP 伺服器](./dhcp.md) 和 [NAT](./nat.md)
 
