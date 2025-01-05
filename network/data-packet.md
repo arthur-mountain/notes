@@ -1,7 +1,12 @@
 # 封包 (data packet)
 
 Before we start, please make sure you have read the
-[public ip and private ip](./public-and-private-ip.md) article.
+
+1. [public ip and private ip](./public-and-private-ip.md)
+
+2. [DHCP and NAT](./dhcp-and-nat.md)
+
+## Summary
 
 IP 數據包(封包)，如何從外部網路(外網)通過路由器轉發封包，到內部網路(內網)的目標設備上。
 
