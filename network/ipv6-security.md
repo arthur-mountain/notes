@@ -4,6 +4,8 @@ Before we start, please make sure you have read the
 
 1. [IPv4 and IPv6](./ipv4-and-ipv6.md)
 
+## Summary
+
 因為 IPv6 提供了足夠多得 IP 位址，使得每台裝置都可以直接連上網際網路，
 
 但也因直接連接能力，同時也帶來了安全上的新挑戰。

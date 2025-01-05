@@ -6,6 +6,8 @@ Before we start, please make sure you have read the
 
 2. [IPv6 Security](./ipv6-security.md)
 
+## Summary
+
 IPsec 是一套用來在網路層提供**加密、安全驗證和數據完整性**的協定套件。
 
 IPsec其實存在於IPv4和IPv6中，但在IPv6中，它被內建並且標準化為協定的一部分。以下是IPsec的詳細介紹:
