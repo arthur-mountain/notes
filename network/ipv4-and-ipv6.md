@@ -76,6 +76,12 @@ Before we start, please make sure you have read the
 
   不過，這種方式並不常見，且不被IPv6標準建議使用。
 
+- **IPv6的安全性**:
+
+  IPv6在設計上考慮了安全性，並且內建了IPsec支持，這是一種用於網路層的加密和認證協定。
+
+  詳情請見 [IPv6 Security](./ipv6-security.md)
+
 ## 總結
 
 - **IPv4和IPv6**:
