@@ -1,10 +1,34 @@
-# socket descriptor and SSL/TLC
+# TCP/UDP and SSL/TLS
+
+## **TCP 和 UDP 的 Socket Descriptor 差異**?
+
+當建立網路通信時，**TCP 和 UDP 的 socket descriptor 有以下主要差異**：
+
+- **TCP Socket Descriptor**:
+
+  - **狀態管理**: TCP 是連接導向的協定，需要維護連接的狀態，包括 `ESTABLISHED`、`CLOSE_WAIT` 等，並管理三次握手和四次揮手的過程。
+
+  - **數據可靠性**: 包含數據重傳、流量控制、擁塞控制等機制，確保數據可靠傳輸。
+
+  - **雙工通信**: 支持雙向通信，同一個 TCP socket descriptor 用於接收和發送數據。
+
+- **UDP Socket Descriptor**:
+
+  - **無狀態**: 無需維護連接狀態，每次通信即一個獨立的數據包傳輸。
+
+  - **簡單數據傳輸**: 不提供重傳和流量控制等功能，傳輸效率高，但可能丟包或順序錯亂。
+
+  - **面向消息**: 每次操作對應一個完整的數據報，與 TCP 的數據流不同。
 
 ## 那建立 socket descriptor，是怎麼處理 SSL 的?
 
-當我們建立一個套接字(socket) 並想要啟用SSL/TLS加密連線時，實際上是在基本的socket上建立了一個加密的「SSL套接字」。
+當我們建立一個套接字(socket) 並想要啟用SSL/TLS加密連線時，
 
-這需要通過 SSL/TLS 協定來處理數據加密和驗證的流程。以下是這個過程的主要步驟以及Kernel和應用程式之間的協作方式:
+實際上是在基本的socket(通常會是 TCP Socket Descriptor)上建立了一個加密的「SSL套接字」。
+
+這需要通過 SSL/TLS 協定來處理數據加密和驗證的流程。
+
+以下是這個過程的主要步驟以及Kernel和應用程式之間的協作方式:
 
 ### 1. 建立基本的 TCP 套接字
 
