@@ -2,9 +2,9 @@
 
 Before we start, please make sure you have read the
 
-1. [public ip and private ip](./public-and-private-ip.md)
+1. [public ip and private ip](../public-and-private-ip.md)
 
-2. [DHCP and NAT](./dhcp-and-nat.md)
+2. [DHCP and NAT](../dhcp-and-nat.md)
 
 ## Summary
 
