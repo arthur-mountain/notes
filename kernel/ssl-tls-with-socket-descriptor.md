@@ -180,9 +180,11 @@ SSL本身並不「啟動自己的套接字描述符」，而是**在應用層包
 
 整個數據傳輸過程，示意圖如下:
 
-```
+```plaintext
 application -> SSL/TLS -> tcp socket descriptor -> [網路傳輸] -> 對方的 tcp socket descriptor -> 對方的 SSL/TLS -> 對方的 application
 ```
+
+[此為進階篇，除了上述的數據發送流程外，添加了數據封包的流程](../network/data-packet/packet-sending-flow.md)
 
 ## 總結
 
