@@ -29,6 +29,18 @@
 
    - **若有 build 設定**，則執行 `docker build`，傳入 build context、Dockerfile 與 build args 等。
 
+     - build.context
+
+       build.context 是相對於執行 docker-compose 指令時的當前工作目錄。
+
+       在 Dockerfile 內的路徑也會以 context 為基礎來配置。
+
+     - build.dockerfile
+
+       build.dockerfile 是相對於 context 的路徑，可以指定自定義的 Dockerfile 文件路徑。(注意，檔名一定要寫！)
+
+       如果 docker-compose.yml 和 Dockerfile 不在同一目錄下，可以透過此參數來明確指定 Dockerfile 的位置。
+
    - **若使用 image**，則嘗試從本地或遠端拉取(`docker pull`)。
 
    - **建立 volumes、networks 等資源**(如有定義，或預設 network)。
@@ -147,3 +159,49 @@ environment:
 - `environment` 最靈活，支援從 `.env` 取值
 - ARG 和 ENV 使用時要考慮 **build vs runtime**
 - CMD 不能用 ARG，記得轉成 ENV
+
+---
+
+## 補充
+
+在使用 `docker-compose` 執行多個 YAML 文件時，可以透過 `-f` 參數來指定多個 `docker-compose.yml` 文件。
+
+這樣的操作會將這些 YAML 文件中的內容合併，並且以一種層疊的方式進行處理。
+
+這裡是具體範例：
+
+```bash
+docker-compose \
+  -f docker-compose.network.yml \
+  -f ./client/docker-compose.yml \
+  -f ./server/docker-compose.yml \
+  up
+```
+
+### 如何工作？
+
+- 當使用多個 `-f` 參數時，`docker-compose` 會根據文件的順序依次加載各個 YAML 文件，並合併其內容。
+
+- 在合併過程中，後面指定的文件會覆蓋前面文件中相同的設定。
+
+  也就是說，**後面的文件會優先使用**，並且會覆蓋掉前面文件中已經定義過的相同內容。
+
+  例如：
+
+  - 在 `docker-compose.network.yml` 中可能定義了一些網路設定，然後在 `./server/docker/docker-compose.yml` 中重新定義或調整了一些網路設置。
+
+    此時，`./server/docker/docker-compose.yml` 中的設定會覆蓋掉 `docker-compose.network.yml` 中的設定。
+
+### 使用場景
+
+這樣的方式通常用於以下情境：
+
+1. **分離環境配置**:
+
+   例如，可能有一個基礎的 `docker-compose.yml` 文件用於開發環境，然後有一個額外的文件 `docker-compose.prod.yml` 用於生產環境設定。
+
+   這樣，可以根據不同的環境加載不同的設定。
+
+2. **共享配置**：
+
+   將共用的服務配置(如網路、資料卷等)放在一個文件中，然後將具體的應用服務配置放在另一個文件中，這樣便於管理和維護。
